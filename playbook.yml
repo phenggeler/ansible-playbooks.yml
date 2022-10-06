@@ -1,0 +1,41 @@
+---
+  - name: "Playing with Ansible and Git"
+    hosts: localhost
+    connection: local 
+    tasks:
+
+    - name: "Update Package Manager"
+      shell: "sudo apt update"
+      register: "output"
+
+    - name: "Install wget"
+      shell: "sudo apt install --assume-yes wget tasksel"
+      register: "output"
+      
+    - name: "Configure Gnome desktop environment"
+      shell: "sudo DEBIAN_FRONTEND=noninteractive apt install --assume-yes  task-gnome-desktop"
+      register: "output"
+
+    - name: "Configure Chrome Remote Desktop session to use Gnome"
+      shell: "sudo bash -c 'echo \"exec /etc/X11/Xsession /usr/bin/gnome-session\" > /etc/chrome-remote-desktop-session'"
+      register: "output"
+      
+    - name: "Download Chrome Browser installer"
+      shell: "wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+      register: "output"
+
+    - name: "Install Chrome Browser"
+      shell: "sudo apt install --assume-yes ./google-chrome-stable_current_amd64.deb"
+      register: "output"
+      
+    - name: "Create Chrome policies directory"
+      file:
+        path: /etc/opt/chrome/policies
+        state: directory
+
+    - name: "Chreate Chrome enrollment directory"
+      file: 
+        path: /etc/opt/chrome/policies/enrollment
+        state: directory
+
+    - debug: var=output.stdout_lines
